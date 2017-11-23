@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Secure App</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"> Common Security SDK for all VMware Products (Borathon 2017) </a>
+            </div>
+    
+        </div>
+    </nav>
+        
+    <div class="container" style="margin-top: 200px !important;">
+        <div class="col-xs-8 col-sm-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><h3> Money Transfer Portal Login </h3> </div>
+                <div class="panel-body">
+                <form role="form">
+                    &nbsp;
+                    <div class="row">
+                        <div class="form-group col-xs-12">
+                        <label for="username"><span class="text-danger" style="margin-right:5px;">*</span>Username:</label>
+                            <div class="input-group">
+                                <input class="form-control" id="username" type="text" name="username" placeholder="Username" required/>
+                                <span class="input-group-btn">
+                                    <label class="btn btn-primary"><span class="glyphicon glyphicon-user" aria-hidden="true"></label>
+                                </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-xs-12">
+                            <label for="password"><span class="text-danger" style="margin-right:5px;">*</span>Password:</label>
+                            <div class="input-group">
+                                <input class="form-control" id="password" type="password" name="password" placeholder="Password" required/>
+                                <span class="input-group-btn">
+                                    <label class="btn btn-primary"><span class="glyphicon glyphicon-lock" aria-hidden="true"></label>
+                                </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function transfer() {
+            // '"-->><img src=x onerror=confirm(8)>
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var res= this.responseText;
+                    var obj = JSON.parse(res);
+                    console.log(obj);
+                    document.getElementById("page-header").innerHTML = "Welcome " + obj.username;
+                    document.getElementById("personid").innerHTML = obj.id;
+                    document.getElementById("lastaccount").innerHTML = (obj.lastaccount)?obj.lastaccount:"No Information";
+                    document.getElementById("totalbalance").innerHTML = "Rs " + obj.totalbalance;
+                    document.getElementById("accounttotransfer").value = '';
+                    document.getElementById("moneytotransfer").value = '';
+                }
+            };
+            console.log("start");
+            var url = "/api/message/transfer";
+            var type = "POST"; 
+            var fromAccountId = document.getElementById("personid");
+            var fromAccount = fromAccountId.textContent || fromAccountId.innerText;
+            var toAccount = document.getElementById("accounttotransfer").value;
+            var amount = document.getElementById("moneytotransfer").value;
+            var params = {
+                fromAccount: fromAccount, 
+                toAccount: toAccount,
+                amount: amount
+            };
+            console.log(params);
+            xhttp.open(type, url, true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify(params));
+            console.log("done");
+        }
+    </script>
+                
+</body>
+</html>
