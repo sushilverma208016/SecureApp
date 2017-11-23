@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Vulnearble App</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"> Common Security SDK for all VMware Products (Borathon 2017) </a>
+            </div>
+    
+        </div>
+    </nav>
+        
+    <div id="main" class="container-fluid" style="margin-top: 50px">
+        <router-outlet></router-outlet>
+    </div>
+            
+        <h3 class="page-header" id="page-header"> </h3>
+        
+        <div class="container">
+            <div style="text-align:center">
+            <h3> Money Transfer Portal </h3>
+            </div>
+            &nbsp;
+            <form class="form-horizontal" action="/action_page.php">
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="youraccount">Your Account Number:</label>
+                    <div class="col-sm-5">
+                    <h5  id="personid"> <b> </b> </h5>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="totalbalance"> Last account money transferred:</label>
+                    <div class="col-sm-5">
+                        <h5 id="lastaccount"> <b> </b> </h5>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="lastaccount">Your Current Balance:</label>
+                    <div class="col-sm-5">
+                        <h5 id="totalbalance"> <b> </b> </h5>
+                    </div>
+                </div>        
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="accounttotransfer">Account to transfer:</label>
+                    <div class="col-sm-5">
+                    <input type="text" class="form-control" #accounttotransfer id="accounttotransfer" placeholder="Enter account number to transfer money" name="email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="moneytotransfer">Money to transfer:</label>
+                    <div class="col-sm-5">
+                    <input type="text" class="form-control" #moneytotransfer id="moneytotransfer" placeholder="Enter money to be transferred" name="email">
+                    </div>
+                </div>
+                &nbsp;
+                <div class="form-group">  
+                    <label class="control-label col-sm-3" for="transfer"></label>
+                    <div class="col-sm-5">
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target=  "#transfer-modal">Transfer</a>
+                    </div>
+                </div>
+            </form>
+            </div>
+        
+        <hr />
+        
+        <!-- Modal -->
+        <div class="modal fade" id="transfer-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabel">Transfer Money</h4>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure to transfer money?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="transfer()" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>      
+
+        <script>
+            function loadDoc() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var res= this.responseText;
+                        var obj = JSON.parse(res);
+                        document.getElementById("page-header").innerHTML = "Welcome " + obj.username;
+                        document.getElementById("personid").innerHTML = obj.id;
+                        document.getElementById("lastaccount").innerHTML = obj.lastaccount || "No Information";
+                        document.getElementById("totalbalance").innerHTML = "Rs " + obj.totalbalance;
+                    }
+                };
+                var url = "/api/message/1";
+                var type = "GET"; 
+                xhttp.open(type, url, true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send();
+            }
+            loadDoc();
+            function transfer() {
+                // '"-->><img src=x onerror=confirm(8)>
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var res= this.responseText;
+                        var obj = JSON.parse(res);
+                        console.log(obj);
+                        document.getElementById("page-header").innerHTML = "Welcome " + obj.username;
+                        document.getElementById("personid").innerHTML = obj.id;
+                        document.getElementById("lastaccount").innerHTML = (obj.lastaccount)?obj.lastaccount:"No Information";
+                        document.getElementById("totalbalance").innerHTML = "Rs " + obj.totalbalance;
+                        document.getElementById("accounttotransfer").value = '';
+                        document.getElementById("moneytotransfer").value = '';
+                    }
+                };
+                console.log("start");
+                var url = "/api/message/transfer";
+                var type = "POST"; 
+                var fromAccountId = document.getElementById("personid");
+                var fromAccount = fromAccountId.textContent || fromAccountId.innerText;
+                var toAccount = document.getElementById("accounttotransfer").value;
+                var amount = document.getElementById("moneytotransfer").value;
+                var params = {
+                    fromAccount: fromAccount, 
+                    toAccount: toAccount,
+                    amount: amount
+                };
+                console.log(params);
+                xhttp.open(type, url, true);
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.send(JSON.stringify(params));
+                console.log("done");
+            }
+        </script>
+                
+</body>
+</html>

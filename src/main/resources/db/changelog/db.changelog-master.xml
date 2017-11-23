@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="vsushil">
+
+        <createTable tableName="message">
+            <column name="id" type="INT"></column>
+            <column name="accountnumber" type="VARCHAR(255)"></column>
+            <column name="lastaccount" type="VARCHAR(255)"></column>
+            <column name="username" type="VARCHAR(255)"></column>
+            <column name="password" type="VARCHAR(255)"></column>
+            <column name="totalbalance" type="INT"></column>
+            <column name="version" type="INT"></column>
+        </createTable>
+
+        <sql endDelimiter=";">
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(1,'1','','userName1','password1',3200,0);
+
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(2,'2','','userName2','password2',5500,0);
+
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(3,'3','','userName3','password3',2200,0);
+
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(4,'4','','userName4','password4',4400,0);
+
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(5,'5','','userName5','password5',4300,0);
+            
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
