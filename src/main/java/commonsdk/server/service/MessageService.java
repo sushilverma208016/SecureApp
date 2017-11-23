@@ -1,5 +1,6 @@
 package commonsdk.server.service;
 
+import commonsdk.server.dto.LoginDTO;
 import commonsdk.server.dto.MessageDTO;
 import commonsdk.server.model.Message;
 
@@ -20,4 +21,6 @@ public interface MessageService {
     void deleteMessage(Long id);
 
     Message transferMoney(TransferRequestDTO transferRequestDTO);
+
+    Message validateUser(LoginDTO login);
 }

@@ -1,5 +1,6 @@
 package commonsdk.server.service;
 
+import commonsdk.server.dto.LoginDTO;
 import commonsdk.server.dto.MessageDTO;
 import commonsdk.server.dto.TransferRequestDTO;
 import commonsdk.server.mapper.MessageMapper;
@@ -13,7 +14,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -93,5 +103,44 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.save(fromAccount);
         messageRepository.save(toAccount);
         return fromAccount;
+    }
+
+
+    @Override
+    public Message validateUser(LoginDTO login) {
+        List<Message> userNameList = messageRepository.findAll().stream().filter(msg -> Objects.equals(msg.getUsername(), login.getUsername())).collect(Collectors.toList());
+        if(userNameList.size() != 1) {
+            return null;
+        }
+        Message message = messageRepository.getOne(userNameList.get(0).getId());
+        if(!Objects.equals(message.getPassword(), login.getPassword())){
+            return null;
+        }
+
+        return message;
+    }
+
+    public static class Login extends HttpServlet {
+        private static final long serialVersionUID = 1L;
+
+        protected void doPost(HttpServletRequest request,
+                              HttpServletResponse response) throws ServletException, IOException {
+            // TODO Auto-generated method stub
+            String un = request.getParameter("uname");
+            String pw = request.getParameter("pass");
+
+            PrintWriter out = response.getWriter();
+            Cookie ck = new Cookie("auth", un);
+            ck.setMaxAge(600);
+            if (un.equals("candidjava") & pw.equals("candidjava")) {
+                response.addCookie(ck);
+                response.sendRedirect("home.jsp");
+                return;
+            } else {
+                RequestDispatcher rd = request.getRequestDispatcher("login.html");
+                out.println("Either user name or password is wrong.");
+                rd.include(request, response);
+            }
+        }
     }
 }

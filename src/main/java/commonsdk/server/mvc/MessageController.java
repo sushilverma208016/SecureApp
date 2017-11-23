@@ -1,9 +1,11 @@
 package commonsdk.server.mvc;
 
+import commonsdk.server.dto.LoginDTO;
 import commonsdk.server.dto.MessageDTO;
 import commonsdk.server.model.Message;
 import commonsdk.server.dto.TransferRequestDTO;
 import commonsdk.server.service.MessageService;
+import commonsdk.server.service.MessageServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,10 +13,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 
 @RestController
@@ -58,6 +69,13 @@ public class MessageController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteMessage(@PathVariable Long id) {
         messageService.deleteMessage(id);
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Message loginProcess(@RequestBody LoginDTO login) {
+        Message user = messageService.validateUser(login);
+
+        return user;
     }
 }
 
