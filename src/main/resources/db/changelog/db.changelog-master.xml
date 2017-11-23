@@ -28,6 +28,7 @@
             insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(4,'4','','userName4','password4',4400,0);
 
             insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(5,'5','','userName5','password5',4300,0);
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(6,'6','','admin','admin',4300,0);
             
         </sql>
 
