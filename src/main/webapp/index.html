@@ -74,6 +74,14 @@
                     <a href="#" class="btn btn-primary" data-toggle="modal" data-target=  "#transfer-modal">Transfer</a>
                 </div>
             </div>
+            &nbsp;
+            &nbsp;
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="exportData"></label>
+                <div class="col-sm-5">
+                    <button type="button" onclick="exportData()" class="btn btn-primary">Export your data</button>
+                </div>
+            </div>
         </form>
     </div>
         
@@ -181,6 +189,30 @@
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send(JSON.stringify(params));
             console.log("done");
+        }
+
+        function exportData() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    //alert("200");
+                    var res= this.responseText;
+                    if (!res) {
+                        //alert("not res");
+                        window.location = "/forbidden.html";
+                        return;
+                    }
+                } else if (this.readyState === 4 && this.status === 500) {
+                    //console.log("else",this.status);
+                    window.location = "/forbidden.html";
+                    return;
+                }
+            };
+            var url = "/api/message/downloadCSV";
+            var type = "GET";
+            xhttp.open(type, url, true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send();
         }
     </script>
                 

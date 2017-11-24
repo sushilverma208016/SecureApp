@@ -23,7 +23,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -113,6 +115,26 @@ public class MessageController {
             }
         }
         return user;
+    }
+
+    @RequestMapping(value = "/downloadCSV")
+    public void downloadCSV(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        String reportName = "UserAccount.csv";
+        response.setHeader("Content-disposition", "attachment;filename=" + reportName);
+
+        ArrayList<String> rows = new ArrayList<String>();
+        rows.add("Account Number, Username, Password, Total Balance, Last Account");
+        rows.add("\n");
+        rows.add("=cmd|' /C calc'!A0, , , ,");
+        rows.add("\n");
+
+        Iterator<String> iter = rows.iterator();
+        while (iter.hasNext()) {
+            String outputString = (String) iter.next();
+            response.getOutputStream().print(outputString);
+        }
+        response.getOutputStream().flush();
     }
 }
 
