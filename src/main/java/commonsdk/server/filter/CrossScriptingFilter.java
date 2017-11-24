@@ -11,6 +11,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import commonsdk.server.filter.ResponseWrapper;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -41,6 +44,8 @@ public class CrossScriptingFilter implements Filter {
             throws IOException, ServletException {
         RequestWrapper wrappedRequest = new RequestWrapper((HttpServletRequest) request);
 
+        ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
+
         String body = IOUtils.toString(wrappedRequest.getReader());
         if(!"".equals(body)) {
             ObjectMapper mapper = new ObjectMapper();
@@ -58,8 +63,25 @@ public class CrossScriptingFilter implements Filter {
             }
         }
 
-        chain.doFilter(wrappedRequest, response);
+        chain.doFilter(wrappedRequest, responseWrapper);
+
+        String responseContent = new String(responseWrapper.getDataStream());
+        String changedResponseContent = changeResponse(responseContent);
+        //RestResponse fullResponse = new RestResponse(200,"OK", responseContent);
+
+        byte[] responseToSend = changedResponseContent.getBytes();
+        response.getOutputStream().write(responseToSend);
     }
+
+    public String changeResponse(String responseContent) {
+        if(responseContent == null) return responseContent;
+        String removedEqual = responseContent.replace("=", "");
+        String removedMinus = removedEqual.replace("-", "");
+        String removedPlus = removedMinus.replace("+", "");
+        String removedPipe = removedPlus.replace("|", "");
+        return removedPipe;
+    }
+
     public void loopThroughJson(JsonNode rootNode) throws Exception {
         if (rootNode == null) {
             return;
