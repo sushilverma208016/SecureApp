@@ -20,12 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -34,6 +33,8 @@ import java.io.PrintWriter;
 public class MessageController {
 
     final static Logger LOG = LoggerFactory.getLogger(MessageController.class);
+    Map<String, String> sessionInfo = new HashMap<>();
+    Map<String, Message> sessionMessage = new HashMap<>();
 
     @Inject
     MessageService messageService;
@@ -44,16 +45,29 @@ public class MessageController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/transfer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Message transferMoney(@RequestBody TransferRequestDTO transferRequestDTO) {
-
-        return messageService.transferMoney(transferRequestDTO);
+    @RequestMapping(value = "/transfer", method = RequestMethod.POST)
+    public Message transferMoney(@RequestBody TransferRequestDTO transferRequestDTO, HttpServletRequest req) {
+        Map.Entry<String,Message> entry = sessionMessage.entrySet().iterator().next();
+        String key = entry.getKey();
+        Message value = entry.getValue();
+        if(value.getAccountnumber().equals(transferRequestDTO.getFromAccount())){
+            return messageService.transferMoney(transferRequestDTO);
+        }
+        return null;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MessageDTO> getMessage(@PathVariable Long id, HttpServletRequest req) {
-        MessageDTO message = messageService.getMessage(id);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        MessageDTO messageDTO = new MessageDTO();
+        try {
+           messageDTO = messageService.getMessage(id);
+        }
+        catch(Exception e) {
+            return null;
+        };
+        if(sessionInfo.containsKey(messageDTO.getUsername()))
+            return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+        else return null;
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,9 +86,32 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Message loginProcess(@RequestBody LoginDTO login) {
-        Message user = messageService.validateUser(login);
+    public Message loginProcess(@RequestBody LoginDTO login, HttpServletRequest request,HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        //session.setAttribute("username", login.getUsername());
 
+        Message user;
+        if(sessionInfo.get(login.getUsername()) == null) {
+            user = messageService.validateUser(login);
+            if(user != null) {
+                session.setAttribute("user", login.getUsername());
+                session.setMaxInactiveInterval(30);
+                sessionInfo.put(login.getUsername(), session.getId());
+                sessionMessage.put(login.getUsername(), user);
+//                response.sendRedirect("index.html/?id=6");
+            }
+        }
+        else {
+            String id = session.getId();
+
+            if(!id.equals(sessionInfo.get(login.getUsername()))){
+                return null;
+            }
+            else {
+                user = sessionMessage.get(login.getUsername());
+
+            }
+        }
         return user;
     }
 }

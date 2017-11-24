@@ -112,6 +112,7 @@ public class MessageServiceImpl implements MessageService {
         if(userNameList.size() != 1) {
             return null;
         }
+
         Message message = messageRepository.getOne(userNameList.get(0).getId());
         if(!Objects.equals(message.getPassword(), login.getPassword())){
             return null;
