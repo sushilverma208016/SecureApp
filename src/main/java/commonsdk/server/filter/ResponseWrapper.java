@@ -5,12 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
 public class ResponseWrapper extends HttpServletResponseWrapper {
 
     ByteArrayOutputStream output;
-    FilterServletOutputStream filterOutput;
     HttpResponseStatus status = HttpResponseStatus.OK;
 
     public ResponseWrapper(HttpServletResponse response) {
@@ -19,11 +20,13 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
     }
 
     @Override
+    public PrintWriter getWriter() throws IOException {
+        return new PrintWriter(new FilterServletOutputStream(output));
+    }
+
+    @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        if (filterOutput == null) {
-            filterOutput = new FilterServletOutputStream(output);
-        }
-        return filterOutput;
+        return new FilterServletOutputStream(output);
     }
 
     public byte[] getDataStream() {
