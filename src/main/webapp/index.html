@@ -206,6 +206,8 @@
                     //console.log("else",this.status);
                     window.location = "/forbidden.html";
                     return;
+                } else if (this.readyState === 1) {
+                    return;
                 }
             };
             var url = "/api/message/downloadCSV";

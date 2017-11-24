@@ -121,27 +121,4 @@ public class MessageServiceImpl implements MessageService {
         return message;
     }
 
-    public static class Login extends HttpServlet {
-        private static final long serialVersionUID = 1L;
-
-        protected void doPost(HttpServletRequest request,
-                              HttpServletResponse response) throws ServletException, IOException {
-            // TODO Auto-generated method stub
-            String un = request.getParameter("uname");
-            String pw = request.getParameter("pass");
-
-            PrintWriter out = response.getWriter();
-            Cookie ck = new Cookie("auth", un);
-            ck.setMaxAge(600);
-            if (un.equals("candidjava") & pw.equals("candidjava")) {
-                response.addCookie(ck);
-                response.sendRedirect("home.jsp");
-                return;
-            } else {
-                RequestDispatcher rd = request.getRequestDispatcher("login.html");
-                out.println("Either user name or password is wrong.");
-                rd.include(request, response);
-            }
-        }
-    }
 }
