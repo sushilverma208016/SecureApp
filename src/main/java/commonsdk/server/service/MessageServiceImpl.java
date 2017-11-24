@@ -3,6 +3,7 @@ package commonsdk.server.service;
 import commonsdk.server.dto.LoginDTO;
 import commonsdk.server.dto.MessageDTO;
 import commonsdk.server.dto.TransferRequestDTO;
+import commonsdk.server.filter.CSRFFilter;
 import commonsdk.server.mapper.MessageMapper;
 import commonsdk.server.model.Message;
 import commonsdk.server.repository.MessageRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -114,10 +116,12 @@ public class MessageServiceImpl implements MessageService {
         }
 
         Message message = messageRepository.getOne(userNameList.get(0).getId());
+        System.out.println("message object in validateUser " + message.toString());
         if(!Objects.equals(message.getPassword(), login.getPassword())){
             return null;
         }
-
+        message.setCsrftoken(CSRFFilter.generateCSRFToken());
+        messageRepository.save(message);
         return message;
     }
 

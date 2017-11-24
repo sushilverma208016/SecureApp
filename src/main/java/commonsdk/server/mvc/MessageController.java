@@ -2,10 +2,10 @@ package commonsdk.server.mvc;
 
 import commonsdk.server.dto.LoginDTO;
 import commonsdk.server.dto.MessageDTO;
+import commonsdk.server.filter.CSRFFilter;
 import commonsdk.server.model.Message;
 import commonsdk.server.dto.TransferRequestDTO;
 import commonsdk.server.service.MessageService;
-import commonsdk.server.service.MessageServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,18 +28,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
 @RestController
 @CrossOrigin
 @RequestMapping(value = "/api/message")
 public class MessageController {
 
     final static Logger LOG = LoggerFactory.getLogger(MessageController.class);
-    Map<String, String> sessionInfo = new HashMap<>();
-    Map<String, Message> sessionMessage = new HashMap<>();
+    public Map<String, String> sessionInfo = new HashMap<>();
+    public Map<String, Message> sessionMessage = new HashMap<>();
 
     @Inject
     MessageService messageService;
+
+
+    CSRFFilter csrfFilter;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<MessageDTO>> findAllMessage(Pageable pageable, HttpServletRequest req) {
@@ -52,7 +54,7 @@ public class MessageController {
         Map.Entry<String,Message> entry = sessionMessage.entrySet().iterator().next();
         String key = entry.getKey();
         Message value = entry.getValue();
-        if(value.getAccountnumber().equals(transferRequestDTO.getFromAccount())){
+        if(value.getCsrftoken().equals(transferRequestDTO.getCsrftoken()) && value.getAccountnumber().equals(transferRequestDTO.getFromAccount())) {
             return messageService.transferMoney(transferRequestDTO);
         }
         return null;
@@ -111,9 +113,9 @@ public class MessageController {
             }
             else {
                 user = sessionMessage.get(login.getUsername());
-
             }
         }
+        System.out.println("User " + user.toString());
         return user;
     }
 

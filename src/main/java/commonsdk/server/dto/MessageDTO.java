@@ -1,6 +1,7 @@
 package commonsdk.server.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Created by mouradzouabi on 04/12/15.
@@ -16,6 +17,16 @@ public class MessageDTO extends AbstractDTO {
     Integer totalbalance;
 
     String lastaccount;
+
+    String csrftoken;
+
+    public String getCsrftoken() {
+        return csrftoken;
+    }
+
+    public void setCsrftoken(String csrftoken) {
+        this.csrftoken = csrftoken;
+    }
 
     public String getLastaccount() {
         return lastaccount;

@@ -1,5 +1,7 @@
 package commonsdk.server.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
@@ -17,7 +19,30 @@ public class Message extends AbstractEntity {
 
 	String password;
 
+	@Override
+	public String toString() {
+		return "Message{" +
+				"accountnumber='" + accountnumber + '\'' +
+				", lastaccount='" + lastaccount + '\'' +
+				", username='" + username + '\'' +
+				", password='" + password + '\'' +
+				", totalbalance=" + totalbalance +
+				", csrftoken='" + csrftoken + '\'' +
+				'}';
+	}
+
 	Integer totalbalance;
+
+	String csrftoken;
+
+
+	public String getCsrftoken() {
+		return csrftoken;
+	}
+
+	public void setCsrftoken(String csrftoken) {
+		this.csrftoken = csrftoken;
+	}
 
 	public String getAccountnumber() {
 		return accountnumber;

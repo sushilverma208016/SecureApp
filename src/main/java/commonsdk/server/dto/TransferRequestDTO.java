@@ -1,9 +1,20 @@
 package commonsdk.server.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class TransferRequestDTO {
     String fromAccount;
     String toAccount;
     Integer amount;
+    String csrftoken;
+
+    public String getCsrftoken() {
+        return csrftoken;
+    }
+
+    public void setCsrftoken(String csrftoken) {
+        this.csrftoken = csrftoken;
+    }
 
     public String getFromAccount() {
         return fromAccount;
