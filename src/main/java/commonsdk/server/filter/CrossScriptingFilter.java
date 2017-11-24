@@ -68,7 +68,7 @@ public class CrossScriptingFilter implements Filter {
          chain.doFilter(wrappedRequest, responseWrapper);
          String responseContent = new String(responseWrapper.getDataStream());
          String changedResponseContent = "";
-         if (response.getContentType().equals("text/csv")) {
+         if (response != null && response.getContentType() != null && response.getContentType().equals("text/csv")) {
              changedResponseContent = changeResponse(responseContent);
          } else {
              changedResponseContent = responseContent;
