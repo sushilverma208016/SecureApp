@@ -44,7 +44,7 @@ public class CrossScriptingFilter implements Filter {
             throws IOException, ServletException {
         RequestWrapper wrappedRequest = new RequestWrapper((HttpServletRequest) request);
 
-        ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
+        // ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
 
         String body = IOUtils.toString(wrappedRequest.getReader());
         if(!"".equals(body)) {
@@ -63,14 +63,13 @@ public class CrossScriptingFilter implements Filter {
             }
         }
 
-        chain.doFilter(wrappedRequest, responseWrapper);
+        chain.doFilter(wrappedRequest, response);
 
-        String responseContent = new String(responseWrapper.getDataStream());
-        String changedResponseContent = changeResponse(responseContent);
-        //RestResponse fullResponse = new RestResponse(200,"OK", responseContent);
-
-        byte[] responseToSend = changedResponseContent.getBytes();
-        response.getOutputStream().write(responseToSend);
+        // chain.doFilter(wrappedRequest, responseWrapper);
+        // String responseContent = new String(responseWrapper.getDataStream());
+        // String changedResponseContent = changeResponse(responseContent);
+        // byte[] responseToSend = changedResponseContent.getBytes();
+        // response.getOutputStream().write(responseToSend);
     }
 
     public String changeResponse(String responseContent) {
