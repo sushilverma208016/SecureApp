@@ -23,4 +23,6 @@ public interface MessageService {
     Message transferMoney(TransferRequestDTO transferRequestDTO);
 
     Message validateUser(LoginDTO login);
+
+    Message getUserDetails(String id);
 }

@@ -75,9 +75,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message transferMoney(TransferRequestDTO transferRequestDTO) {
-        List<Message> fromAccountList = messageRepository.findAll().stream().filter(msg -> msg.getAccountnumber().equals(transferRequestDTO.getFromAccount())).collect(Collectors.toList());
-
-        Message fromAccount = fromAccountList.get(0);
+        Message fromAccount = getUserDetails(transferRequestDTO.getFromAccount());
         final long[] id = {0};
         List<Message> toAccountList = messageRepository.findAll().stream().filter(msg -> msg.getAccountnumber().equals(transferRequestDTO.getToAccount())).collect(Collectors.toList());
         messageRepository.findAll().forEach(msg -> {
@@ -106,6 +104,13 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.save(toAccount);
         fromAccount.setPassword("****");
         return fromAccount;
+    }
+
+    @Override
+    public  Message getUserDetails(String id) {
+        List<Message> fromAccountList = messageRepository.findAll().stream().filter(msg -> msg.getAccountnumber().equals(id)).collect(Collectors.toList());
+
+        return fromAccountList.get(0);
     }
 
 
