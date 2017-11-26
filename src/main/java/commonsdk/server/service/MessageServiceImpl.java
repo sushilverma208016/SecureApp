@@ -120,8 +120,6 @@ public class MessageServiceImpl implements MessageService {
         if(!Objects.equals(message.getPassword(), login.getPassword())){
             return null;
         }
-        message.setCsrftoken(CSRFFilter.generateCSRFToken());
-        messageRepository.save(message);
         return message;
     }
 
