@@ -75,7 +75,7 @@
             }
 
 
-
+            // // '-->><script> while(1) alert("hacked")</script>
             //chain.doFilter(wrappedRequest, response);
 
              chain.doFilter(wrappedRequest, responseWrapper);
