@@ -79,7 +79,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-3" for="exportData"></label>
                 <div class="col-sm-5">
-                    <a href="/api/message/downloadCSV" class="btn btn-primary" >Export your data</a>
+                    <a href="/api/message/downloadCSV" onclick="location.href = this.href + '/' + csrf.id; return false;" class="btn btn-primary" >Export your data</a>
                 </div>
             </div>
         </form>
@@ -107,7 +107,8 @@
     <script>
         "use strict";
         var csrf = {
-            number: ''
+            number: '',
+            id: ''
         };
 
         function loadDoc() {
@@ -140,6 +141,7 @@
                     $("#totalbalance").html("Rs " + obj.totalbalance);
 
                     csrf.number = obj.csrftoken;
+                    csrf.id= obj.id;
                     console.log(csrf.number);
                 } else if (this.readyState === 4 && this.status === 500) {
                     console.log("else",this.status);
@@ -230,10 +232,13 @@
                 }
             };
             var url = "/api/message/downloadCSV";
-            var type = "GET";
+            var type = "POST";
+            var params = {
+                id: csrf.id
+            }
             xhttp.open(type, url, true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhttp.send();
+            xhttp.send(JSON.stringify(params));
         }
     </script>
                 
