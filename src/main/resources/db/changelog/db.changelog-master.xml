@@ -15,21 +15,20 @@
             <column name="username" type="VARCHAR(255)"></column>
             <column name="password" type="VARCHAR(255)"></column>
             <column name="totalbalance" type="INT"></column>
-            <column name="csrftoken" type="VARCHAR(255)"></column>
             <column name="version" type="INT"></column>
         </createTable>
 
         <sql endDelimiter=";">
-            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,csrftoken,version) values(1,'1','','userName1','password1',3200,'',0);
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(1,'1','','userName1','password1',3200,0);
 
-            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,csrftoken,version) values(2,'2','','userName2','password2',5500,'',0);
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(2,'2','','userName2','password2',5500,0);
 
-            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,csrftoken,version) values(3,'3','','userName3','password3',2200,'',0);
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(3,'3','','userName3','password3',2200,0);
 
-            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,csrftoken,version) values(4,'4','','userName4','password4',4400,'',0);
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(4,'4','','userName4','password4',4400,0);
 
-            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,csrftoken,version) values(5,'5','','userName5','password5',4300,'',0);
-            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,csrftoken,version) values(6,'6','','admin','admin',4300,'',0);
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(5,'5','','userName5','password5',4300,0);
+            insert into message(id,accountnumber,lastaccount,username,password,totalbalance,version) values(6,'6','','admin','admin',4300,0);
             
         </sql>
 

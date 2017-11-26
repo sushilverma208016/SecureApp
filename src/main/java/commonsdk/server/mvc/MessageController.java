@@ -54,7 +54,8 @@ public class MessageController {
         Map.Entry<String,Message> entry = sessionMessage.entrySet().iterator().next();
         String key = entry.getKey();
         Message value = entry.getValue();
-        if(value.getCsrftoken().equals(transferRequestDTO.getCsrftoken()) && value.getAccountnumber().equals(transferRequestDTO.getFromAccount())) {
+        if(value.getAccountnumber().equals(transferRequestDTO.getFromAccount())){
+//        if(value.getCsrftoken().equals(transferRequestDTO.getCsrftoken()) && value.getAccountnumber().equals(transferRequestDTO.getFromAccount())) {
             return messageService.transferMoney(transferRequestDTO);
         }
         return null;

@@ -18,16 +18,6 @@ public class MessageDTO extends AbstractDTO {
 
     String lastaccount;
 
-    String csrftoken;
-
-    public String getCsrftoken() {
-        return csrftoken;
-    }
-
-    public void setCsrftoken(String csrftoken) {
-        this.csrftoken = csrftoken;
-    }
-
     public String getLastaccount() {
         return lastaccount;
     }
