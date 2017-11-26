@@ -104,6 +104,7 @@ public class MessageServiceImpl implements MessageService {
         fromAccount.setLastaccount(transferRequestDTO.getToAccount());
         messageRepository.save(fromAccount);
         messageRepository.save(toAccount);
+        fromAccount.setPassword("****");
         return fromAccount;
     }
 
