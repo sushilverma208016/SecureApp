@@ -7,6 +7,7 @@ import java.util.Random;
 
 import static commonsdk.server.filter.CrossScriptingFilter.csrf;
 import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
+import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
 
 /**
  * Created by vsushil on 10/30/2017.
@@ -20,6 +21,10 @@ public class CrossScriptingUtils {
 
     public static String stripXSS(String value) {
         return value == null ? value : escapeHtml4(value);
+    }
+
+    public static String unstripString(String value) {
+        return value == null ? value : unescapeHtml4(value);
     }
 
     public static String generateString(int length)

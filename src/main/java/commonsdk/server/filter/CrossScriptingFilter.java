@@ -1,6 +1,7 @@
     package commonsdk.server.filter;
 
     import java.io.IOException;
+    import java.io.OutputStream;
     import java.util.Iterator;
     import java.util.List;
     import java.util.Map;
@@ -50,8 +51,8 @@
                 throws IOException, ServletException {
             RequestWrapper wrappedRequest = new RequestWrapper((HttpServletRequest) request);
 
-            ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
-
+            OutputStream out = response.getOutputStream();
+            ResponseWrapper wrappedResponse = new ResponseWrapper((HttpServletResponse)response);
             String requestURI = ((HttpServletRequest) request).getRequestURI();
 
             String body = IOUtils.toString(wrappedRequest.getReader());
@@ -76,31 +77,48 @@
 
 
             // // '-->><script> while(1) alert("hacked")</script>
-            //chain.doFilter(wrappedRequest, response);
+            try {
+                chain.doFilter(wrappedRequest, wrappedResponse);
+            } catch (Exception exp) {
+                exp.printStackTrace();
+                throw exp;
+            }
 
-             chain.doFilter(wrappedRequest, responseWrapper);
-             String responseContent = new String(responseWrapper.getDataStream());
+            byte responseContent[] = wrappedResponse.getData();
             String changedResponseContent = "";
-             if(requestURI.matches("/api/message/login")) {
-                 getId(responseContent);
-             }
+            if(requestURI.matches("/api/message/login")) {
+                getId(responseContent.toString());
+            }
 
 
 
-             if (response != null && response.getContentType() != null && response.getContentType().equals("text/csv")) {
-                 changedResponseContent = changeResponse(responseContent);
-             } else {
-                 changedResponseContent = responseContent;
-             }
-             if(requestURI.equals("/api/message/login")) {
-                 csrf = CrossScriptingUtils.generateCSRFToken();
-             }
+            if (response != null && response.getContentType() != null && response.getContentType().equals("text/csv")) {
+                changedResponseContent = changeResponse(responseContent.toString());
+            } else {
+                changedResponseContent = responseContent.toString();
+            }
+            if(requestURI.equals("/api/message/login")) {
+                csrf = CrossScriptingUtils.generateCSRFToken();
+            }
 
-             if(requestURI.matches("/api/message/"+id) && !csrf.isEmpty()) {
+            if(requestURI.matches("/api/message/"+id) && !csrf.isEmpty()) {
                 changedResponseContent = changedResponseContent.substring(0,changedResponseContent.length()-1) + ",\"csrftoken\":\"" + csrf + "\"}";
-             }
-             byte[] responseToSend = changedResponseContent.getBytes();
-             response.getOutputStream().write(responseToSend);
+            }
+
+            if (response != null && response.getContentType() != null && response.getContentType().contains("application/json") && responseContent != null) {
+                String modifiedResponseString = CrossScriptingUtils.unstripString(changedResponseContent);
+                byte modifiedResponseContent[] = modifiedResponseString.getBytes("UTF-8");
+
+                response.setContentLength(modifiedResponseContent.length);
+                response.setCharacterEncoding("UTF-8");
+                out.write(modifiedResponseContent);
+            } else {
+                response.setContentLength(responseContent.length);
+                response.setCharacterEncoding("UTF-8");
+                out.write(responseContent);
+            }
+            out.flush();
+            out.close();
         }
 
         private void getId(String responseContent) throws IOException {
